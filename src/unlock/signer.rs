@@ -824,11 +824,15 @@ impl ScriptSigner for OmniLockScriptSigner {
                 if admin_config.rc_type_id().as_bytes() != &args[22..54] {
                     return false;
                 }
-                if let Some(multisig_cfg) = admin_config.get_multisig_config() {
-                    return multisig_cfg
-                        .sighash_addresses
-                        .iter()
-                        .any(|id| self.signer.match_id(id.as_bytes()));
+                if admin_config.get_auth().flag() == IdentityFlag::Multisig {
+                    if let Some(multisig_cfg) = admin_config.get_multisig_config() {
+                        return multisig_cfg
+                            .sighash_addresses
+                            .iter()
+                            .any(|id| self.signer.match_id(id.as_bytes()));
+                    } else {
+                        return false;
+                    }
                 } else {
                     return self
                         .signer
