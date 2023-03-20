@@ -39,6 +39,13 @@ pub const MULTISIG_TYPE_HASH: H256 =
 pub const DAO_TYPE_HASH: H256 =
     h256!("0x82d76d1b75fe2fd9a27dfbaa65a039221a380d76c926f378d3f81cf3e7e13f2e");
 
+pub const SECP256K1_DATA_TX_HASH_MAINNET: H256 =
+    h256!("0xe2fb199810d49a4d8beec56718ba2593b665db9d52299a0f9e6e75416d73ff5c");
+pub const SECP256K1_DATA_TX_INDEX_MAINNET: u32 = 0x03;
+pub const SECP256K1_DATA_TX_HASH_TESTNET: H256 =
+    h256!("0x8f8c79eb6671709633fe6a46de93c0fedc9c1b8a6527a18d3983879542635c9f");
+pub const SECP256K1_DATA_TX_INDEX_TESTNET: u32 = 0x03;
+
 /// anyone can pay script mainnet code hash, see:
 /// <https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0026-anyone-can-pay/0026-anyone-can-pay.md#notes>
 pub const ACP_TYPE_HASH_LINA: H256 =

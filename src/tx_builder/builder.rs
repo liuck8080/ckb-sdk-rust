@@ -28,6 +28,7 @@ use ckb_types::{
 
 use super::acp::add_default_acp_dep;
 use super::cheque::add_default_cheque_dep;
+use super::omni_lock::add_default_omnilock_dep;
 use super::udt::add_default_sudt_dep;
 use super::TxBuilderError;
 
@@ -87,6 +88,7 @@ impl BaseTransactionBuilder {
         add_default_sudt_dep(&mut cell_dep_resolver, network_info.network_type);
         add_default_acp_dep(&mut cell_dep_resolver, network_info.network_type);
         add_default_cheque_dep(&mut cell_dep_resolver, network_info.network_type);
+        add_default_omnilock_dep(&mut cell_dep_resolver, network_info.network_type);
 
         let cell_collector = DefaultCellCollector::new(&network_info.url);
         let tx_dep_provider = DefaultTransactionDependencyProvider::new(&network_info.url, 10);

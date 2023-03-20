@@ -128,7 +128,7 @@ fn test_omnilock_simple_hash(cfg: OmniLockConfig) {
     tx = new_tx;
 
     assert_eq!(tx.header_deps().len(), 0);
-    assert_eq!(tx.cell_deps().len(), 1);
+    assert_eq!(tx.cell_deps().len(), 2); // omnilock; sighash
     assert_eq!(tx.inputs().len(), 2);
     for out_point in tx.input_pts_iter() {
         assert_eq!(ctx.get_input(&out_point).unwrap().0.lock(), sender);
@@ -457,7 +457,7 @@ fn test_omnilock_simple_hash_rc(mut cfg: OmniLockConfig, unlock_mode: OmniUnlock
     //     serde_json::to_string_pretty(&json_types::TransactionView::from(tx.clone())).unwrap()
     // );
     assert_eq!(tx.header_deps().len(), 0);
-    assert_eq!(tx.cell_deps().len(), 1 + rce_cells_len);
+    assert_eq!(tx.cell_deps().len(), 2 + rce_cells_len); // omnilock; sighash
     assert_eq!(tx.inputs().len(), 1);
     for out_point in tx.input_pts_iter() {
         assert_eq!(ctx.get_input(&out_point).unwrap().0.lock(), sender);
@@ -560,7 +560,7 @@ fn test_omnilock_simple_hash_rc2(mut cfg: OmniLockConfig) {
     tx = new_tx;
 
     assert_eq!(tx.header_deps().len(), 0);
-    assert_eq!(tx.cell_deps().len(), 4);
+    assert_eq!(tx.cell_deps().len(), 5); // omnilock; sighash; 3 * rces
     assert_eq!(tx.inputs().len(), 1);
     for out_point in tx.input_pts_iter() {
         assert_eq!(ctx.get_input(&out_point).unwrap().0.lock(), sender);
@@ -630,7 +630,7 @@ fn test_omnilock_transfer_from_multisig() {
 
     assert_eq!(locked_groups, Some(Vec::new()));
     assert_eq!(tx.header_deps().len(), 0);
-    assert_eq!(tx.cell_deps().len(), 1);
+    assert_eq!(tx.cell_deps().len(), 2); // omnilock; multisig
     assert_eq!(tx.inputs().len(), 2);
     for out_point in tx.input_pts_iter() {
         assert_eq!(ctx.get_input(&out_point).unwrap().0.lock(), sender);
@@ -745,7 +745,7 @@ fn test_omnilock_transfer_from_multisig_wl_commnon(unlock_mode: OmniUnlockMode) 
 
     assert_eq!(locked_groups, Some(Vec::new()));
     assert_eq!(tx.header_deps().len(), 0);
-    assert_eq!(tx.cell_deps().len(), 4);
+    assert_eq!(tx.cell_deps().len(), 5); // omnilock; multisig; 3 rces
     assert_eq!(tx.inputs().len(), 2);
     for out_point in tx.input_pts_iter() {
         assert_eq!(ctx.get_input(&out_point).unwrap().0.lock(), sender);
@@ -1018,7 +1018,7 @@ fn test_omnilock_transfer_from_acp() {
     tx = new_tx;
 
     assert_eq!(tx.header_deps().len(), 0);
-    assert_eq!(tx.cell_deps().len(), 1);
+    assert_eq!(tx.cell_deps().len(), 2); // omnilock; sighash
     assert_eq!(tx.inputs().len(), 2);
     assert_eq!(tx.outputs().len(), 2);
     assert_eq!(tx.output(0).unwrap(), output);
@@ -1290,7 +1290,7 @@ fn test_omnilock_simple_hash_timelock(mut cfg: OmniLockConfig) {
     // tx = new_tx;
 
     assert_eq!(tx.header_deps().len(), 0);
-    assert_eq!(tx.cell_deps().len(), 1);
+    assert_eq!(tx.cell_deps().len(), 2); // omnilock; sighash
     assert_eq!(tx.inputs().len(), 1);
 
     let mut since_bytes = [0u8; 8];
@@ -1444,7 +1444,7 @@ fn test_omnilock_sudt_supply() {
     tx = new_tx;
 
     assert_eq!(tx.header_deps().len(), 0);
-    assert_eq!(tx.cell_deps().len(), 3);
+    assert_eq!(tx.cell_deps().len(), 4); // omnilock; sudt; always_success; sighash;
     assert_eq!(tx.inputs().len(), 1);
     assert_eq!(tx.outputs().len(), 2);
     assert_eq!(tx.output(0).unwrap(), output_supply);
