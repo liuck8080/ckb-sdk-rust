@@ -1,4 +1,4 @@
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 
 use ckb_types::{
     bytes::Bytes,
@@ -12,8 +12,14 @@ use ckb_types::{
 use super::{TxBuilder, TxBuilderError};
 use crate::{
     constants::{MULTISIG_TYPE_HASH, SIGHASH_TYPE_HASH},
-    traits::{CellCollector, CellDepResolver, HeaderDepResolver, TransactionDependencyProvider},
-    unlock::OmniLockConfig,
+    traits::{
+        CellCollector, CellDepResolver, HeaderDepResolver, SecpCkbRawKeySigner,
+        TransactionDependencyProvider,
+    },
+    unlock::{
+        IdentityFlag, OmniLockConfig, OmniLockScriptSigner, OmniLockUnlocker, OmniUnlockMode,
+        ScriptUnlocker,
+    },
     Address, AddressPayload,
 };
 use crate::{types::ScriptId, NetworkType};
@@ -193,6 +199,32 @@ pub fn build_omnilock_addr(network_type: NetworkType, config: &OmniLockConfig) -
     };
     let address_payload = AddressPayload::new_full(ScriptHashType::Type, code_hash.pack(), args);
     Address::new(network_type, address_payload, true)
+}
+
+pub fn build_omnilock_unlockers(
+    keys: Vec<secp256k1::SecretKey>,
+    config: OmniLockConfig,
+    network_type: NetworkType,
+    unlock_mode: OmniUnlockMode,
+) -> HashMap<ScriptId, Box<dyn ScriptUnlocker>> {
+    let flag = if unlock_mode == OmniUnlockMode::Normal {
+        config.id().flag()
+    } else {
+        config.get_admin_config().unwrap().get_auth().flag()
+    };
+    let signer = if flag == IdentityFlag::Ethereum {
+        SecpCkbRawKeySigner::new_with_ethereum_secret_keys(keys)
+    } else {
+        SecpCkbRawKeySigner::new_with_secret_keys(keys)
+    };
+    let omnilock_signer =
+        OmniLockScriptSigner::new(Box::new(signer), config.clone(), OmniUnlockMode::Normal);
+    let omnilock_unlocker = OmniLockUnlocker::new(omnilock_signer, config);
+    let omnilock_script_id = get_default_script_id(network_type);
+    HashMap::from([(
+        omnilock_script_id,
+        Box::new(omnilock_unlocker) as Box<dyn ScriptUnlocker>,
+    )])
 }
 
 mod builder;
