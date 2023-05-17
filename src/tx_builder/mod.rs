@@ -61,6 +61,10 @@ pub enum TxBuilderError {
 
     #[error("unlock error: `{0}`")]
     Unlock(#[from] UnlockError),
+    #[error("no input found")]
+    NoInput,
+    #[error("need at least `{0}` shannons but specified `{1}` shannons")]
+    InvalidCapacity(u64, u64),
 
     #[error("build_balance_unlocked exceed max loop times, current is: `{0}`")]
     ExceedCycleMaxLoopTimes(u32),

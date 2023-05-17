@@ -12,6 +12,7 @@ use super::builder::PrepareTransactionViewer;
 pub mod dao;
 pub mod multisig;
 pub mod sighash;
+pub mod typeid;
 
 pub trait ScriptHandler {
     fn prepare_transaction(
@@ -32,6 +33,14 @@ pub trait ScriptHandler {
         context: &dyn HandlerContext,
     ) -> Result<bool, TxBuilderError>;
 
+    fn post_build(
+        &self,
+        _index: usize,
+        _tx_builder: &mut TransactionBuilder,
+        _context: &dyn HandlerContext,
+    ) -> Result<bool, TxBuilderError> {
+        Ok(false)
+    }
     fn init(&mut self, network: &NetworkInfo) -> Result<(), TxBuilderError>;
 }
 
